@@ -1,0 +1,293 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Tech Empire Pro | Architect</title>
+    <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;500;700&family=JetBrains+Mono&display=swap" rel="stylesheet">
+    <style>
+        :root { --bg: #0d1117; --panel: #161b22; --accent: #58a6ff; --text: #c9d1d9; --border: #30363d; --success: #238636; --gold: #f1e05a; }
+        * { box-sizing: border-box; font-family: 'Space Grotesk', sans-serif; }
+        body { background: var(--bg); color: var(--text); margin: 0; display: flex; height: 100vh; overflow: hidden; }
+
+        nav { width: 260px; background: #010409; border-right: 1px solid var(--border); padding: 25px; display: flex; flex-direction: column; gap: 10px; }
+        .logo { font-weight: 700; font-size: 1.4rem; color: var(--accent); margin-bottom: 30px; border-bottom: 2px solid var(--accent); padding-bottom: 10px; }
+        .nav-btn { padding: 12px; border: 1px solid transparent; background: none; color: #8b949e; text-align: left; cursor: pointer; border-radius: 8px; font-weight: 500; transition: 0.2s; }
+        .nav-btn.active { background: #161b22; color: white; border-color: var(--accent); }
+
+        main { flex: 1; display: flex; flex-direction: column; }
+        header { height: 80px; border-bottom: 1px solid var(--border); display: flex; align-items: center; padding: 0 40px; gap: 40px; background: #0d1117; }
+        .stat { display: flex; flex-direction: column; }
+        .stat label { font-size: 0.7rem; color: #8b949e; text-transform: uppercase; font-weight: 700; }
+        .stat span { font-size: 1.2rem; font-weight: 700; color: #fff; }
+
+        .view { display: none; padding: 40px; overflow-y: auto; flex: 1; }
+        .view.active { display: block; }
+
+        .card { background: var(--panel); border: 1px solid var(--border); border-radius: 12px; padding: 25px; margin-bottom: 20px; }
+        .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 20px; }
+        
+        input, select, button.btn { width: 100%; padding: 12px; border-radius: 8px; border: 1px solid var(--border); background: #0d1117; color: white; margin: 8px 0; }
+        button.btn { background: var(--accent); color: #000; font-weight: 700; cursor: pointer; border: none; }
+        button.btn:hover:not(:disabled) { filter: brightness(1.2); }
+        button.btn:disabled { opacity: 0.3; cursor: not-allowed; }
+
+        .review-box { background: #f0f6fc; color: #010409; padding: 15px; border-radius: 8px; margin-top: 10px; border-left: 5px solid var(--accent); }
+    </style>
+</head>
+<body>
+
+<nav>
+    <div class="logo">TECH_CORP OS</div>
+    <button class="nav-btn active" onclick="setTab('staff')">👥 Personal / Salarios</button>
+    <button class="nav-btn" onclick="setTab('tech')">🔬 Investigación</button>
+    <button class="nav-btn" onclick="setTab('lab')">⚙️ Laboratorio Chips</button>
+    <button class="nav-btn" onclick="setTab('assembly')">🏗️ Ensamblaje Final</button>
+    <button class="nav-btn" onclick="setTab('market')">💹 Mercado</button>
+</nav>
+
+<main>
+    <header>
+        <div class="stat"><label>Capital</label><span id="m-money">$50,000</span></div>
+        <div class="stat"><label>Ingenieros</label><span id="m-eng">0</span></div>
+        <div class="stat"><label>Ciencia</label><span id="m-rp">0 RP</span></div>
+        <div class="stat"><label>Fans</label><span id="m-fans">1,000</span></div>
+    </header>
+
+    <section id="staff" class="view active">
+        <h2>Recursos Humanos</h2>
+        <div class="grid">
+            <div class="card">
+                <h3>Contratar Ingeniero</h3>
+                <p>Costo: $5,000 | Salario: $500/mes</p>
+                <button class="btn" onclick="hire()">Contratar</button>
+            </div>
+            <div class="card">
+                <h3>Resumen Financiero</h3>
+                <p>Gastos en salarios: <span id="m-wages">$0</span>/mes</p>
+                <p>Asegúrate de tener ventas para cubrir los costos fijos.</p>
+            </div>
+        </div>
+    </section>
+
+    <section id="tech" class="view">
+        <h2>Árbol de Arquitecturas</h2>
+        <div id="tech-tree" class="grid"></div>
+    </section>
+
+    <section id="lab" class="view">
+        <div class="grid">
+            <div class="card">
+                <h2>Diseñar Nueva Familia de Chips</h2>
+                <label>Empresa/Marca</label><input type="text" id="c-brand" value="MyChip">
+                <label>Familia</label><input type="text" id="c-family" value="Neo">
+                <label>Modelo</label><input type="text" id="c-model" value="X-1">
+                
+                <label>Núcleos</label>
+                <select id="c-cores">
+                    <option value="2">2 Núcleos (Base)</option>
+                    <option value="4" id="lock-4" disabled>4 Núcleos (Investigar)</option>
+                    <option value="8" id="lock-8" disabled>8 Núcleos (Investigar)</option>
+                    <option value="16" id="lock-16" disabled>16 Núcleos (Investigar)</option>
+                    <option value="32" id="lock-32" disabled>32 Núcleos (Ultra)</option>
+                    <option value="64" id="lock-64" disabled>Server Grade (10 Chips Max)</option>
+                </select>
+
+                <label>Tecnología (nm)</label>
+                <select id="c-nm">
+                    <option value="14">14nm</option>
+                    <option value="7" id="lock-7nm" disabled>7nm</option>
+                    <option value="3" id="lock-3nm" disabled>3nm</option>
+                </select>
+                <button class="btn" onclick="createCPU()">Fabricar Componente</button>
+            </div>
+            <div class="card">
+                <h3>Almacén de Componentes</h3>
+                <div id="comp-inv" style="font-family: 'JetBrains Mono'; font-size: 0.8rem;"></div>
+            </div>
+        </div>
+    </section>
+
+    <section id="assembly" class="view">
+        <div class="card">
+            <h2>Crear Dispositivo Final</h2>
+            <div class="grid">
+                <div>
+                    <label>Nombre Comercial</label>
+                    <input type="text" id="p-name" placeholder="Ej: ZenBook Pro">
+                    <label>Tipo de Producto</label>
+                    <select id="p-type">
+                        <option value="Smartphone">Smartphone</option>
+                        <option value="Laptop">Laptop</option>
+                        <option value="PC">PC Desktop</option>
+                        <option value="TV">Smart TV</option>
+                        <option value="Server">Servidor Enterprise</option>
+                    </select>
+                    <label>Público Objetivo</label>
+                    <select id="p-use">
+                        <option value="office">Oficina</option>
+                        <option value="gaming">Gaming</option>
+                        <option value="workstation">Workstation</option>
+                    </select>
+                </div>
+                <div>
+                    <label>Seleccionar Chip del Inventario</label>
+                    <select id="p-cpu-select"></select>
+                    <label>Precio de Venta ($)</label>
+                    <input type="number" id="p-price" value="1200">
+                    <button class="btn" style="height: 100px; margin-top: 20px;" onclick="launchProduct()">LANZAR AL MERCADO</button>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section id="market" class="view">
+        <h2>Historial de Ventas y Críticas</h2>
+        <div id="market-feed"></div>
+    </section>
+</main>
+
+<script>
+    let state = {
+        money: 50000, rp: 0, eng: 0, 
+        unlocked: [], inventory: [], history: [],
+        maxedCpus: 0
+    };
+
+    const techData = [
+        { id: 'c4', name: 'Arquitectura 4-Cores', rp: 50, cost: 5000 },
+        { id: 'c8', name: 'Arquitectura 8-Cores', rp: 150, cost: 15000 },
+        { id: 'c16', name: 'Arquitectura 16-Cores', rp: 400, cost: 40000 },
+        { id: 'c32', name: 'Arquitectura 32-Cores', rp: 1000, cost: 80000 },
+        { id: 'c64', name: 'Server Grade (64 Cores)', rp: 3000, cost: 200000 },
+        { id: 'n7', name: 'Litografía 7nm', rp: 200, cost: 25000 },
+        { id: 'n3', name: 'Litografía 3nm', rp: 800, cost: 70000 }
+    ];
+
+    // CICLO DE TIEMPO (Cada 5 seg = 1 Mes)
+    setInterval(() => {
+        state.rp += state.eng * 5;
+        let wages = state.eng * 500;
+        state.money -= wages;
+        updateUI();
+        if(state.money < 0) alert("¡Bancarrota! Tu empresa ha quebrado.");
+    }, 5000);
+
+    function updateUI() {
+        document.getElementById('m-money').innerText = `$${state.money.toLocaleString()}`;
+        document.getElementById('m-eng').innerText = state.eng;
+        document.getElementById('m-rp').innerText = state.rp;
+        document.getElementById('m-fans').innerText = state.fans.toLocaleString();
+        document.getElementById('m-wages').innerText = `$${(state.eng * 500).toLocaleString()}`;
+
+        // Desbloqueos de Lab
+        if(state.unlocked.includes('c4')) document.getElementById('lock-4').disabled = false;
+        if(state.unlocked.includes('c8')) document.getElementById('lock-8').disabled = false;
+        if(state.unlocked.includes('c16')) document.getElementById('lock-16').disabled = false;
+        if(state.unlocked.includes('c32')) document.getElementById('lock-32').disabled = false;
+        if(state.unlocked.includes('c64') && state.maxedCpus >= 10) document.getElementById('lock-64').disabled = false;
+        if(state.unlocked.includes('n7')) document.getElementById('lock-7nm').disabled = false;
+        if(state.unlocked.includes('n3')) document.getElementById('lock-3nm').disabled = false;
+
+        const sel = document.getElementById('p-cpu-select');
+        sel.innerHTML = state.inventory.map((c, i) => `<option value="${i}">${c.fullTitle} (${c.cores} cores)</option>`).join('');
+    }
+
+    function hire() {
+        if(state.money >= 5000) { state.money -= 5000; state.eng++; updateUI(); }
+    }
+
+    function renderTech() {
+        const grid = document.getElementById('tech-tree');
+        grid.innerHTML = techData.map(t => `
+            <div class="card" style="opacity: ${state.unlocked.includes(t.id) ? 0.5 : 1}">
+                <h4>${t.name}</h4>
+                <p>${t.rp} RP | $${t.cost.toLocaleString()}</p>
+                <button class="btn" onclick="unlockTech('${t.id}')" ${state.unlocked.includes(t.id) ? 'disabled' : ''}>Investigar</button>
+            </div>
+        `).join('');
+    }
+
+    function unlockTech(id) {
+        let t = techData.find(x => x.id === id);
+        if(state.money >= t.cost && state.rp >= t.rp) {
+            state.money -= t.cost; state.rp -= t.rp;
+            state.unlocked.push(id); renderTech(); updateUI();
+        }
+    }
+
+    function createCPU() {
+        if(state.eng < 1) return alert("Contrata ingenieros primero.");
+        const cores = parseInt(document.getElementById('c-cores').value);
+        const nm = parseInt(document.getElementById('c-nm').value);
+        const fullTitle = `${document.getElementById('c-brand').value} ${document.getElementById('c-family').value} ${document.getElementById('c-model').value}`;
+        
+        const cost = (cores * 1000) + (10000 / nm);
+        if(state.money >= cost) {
+            state.money -= cost;
+            state.inventory.push({ fullTitle, cores, nm, cost });
+            if(cores >= 32 && nm <= 3) state.maxedCpus++;
+            renderInventory(); updateUI();
+        }
+    }
+
+    function renderInventory() {
+        document.getElementById('comp-inv').innerHTML = state.inventory.map(c => `<div>• ${c.fullTitle} [${c.cores}C / ${c.nm}nm]</div>`).join('');
+    }
+
+    function launchProduct() {
+        const cpuIdx = document.getElementById('p-cpu-select').value;
+        if(cpuIdx === "") return alert("No tienes chips en el inventario.");
+        
+        const cpu = state.inventory[cpuIdx];
+        const name = document.getElementById('p-name').value;
+        const type = document.getElementById('p-type').value;
+        const use = document.getElementById('p-use').value;
+        const price = parseInt(document.getElementById('p-price').value);
+
+        // Algoritmo de Reseña
+        let score = 60;
+        let msgs = [];
+
+        if(type === "Server" && cpu.cores < 32) { score -= 40; msgs.push("¿Un servidor con tan pocos núcleos? Un desastre."); }
+        if(type === "Laptop" && cpu.nm > 7) { score -= 20; msgs.push("Se calienta demasiado para ser una laptop."); }
+        if(use === "gaming" && cpu.cores < 8) { score -= 15; msgs.push("Lag constante en juegos modernos."); }
+        
+        let valueRatio = price / (cpu.cores * 200);
+        if(valueRatio > 1.5) { score -= 20; msgs.push("Demasiado caro para lo que es."); }
+        else if(valueRatio < 0.8) { score += 20; msgs.push("¡Una oferta increíble!"); }
+
+        score = Math.max(0, Math.min(100, score));
+        const sales = Math.floor((score / 100) * 5000);
+        const profit = sales * (price - cpu.cost);
+
+        state.money += profit;
+        state.history.unshift({ name, type, score, sales, profit, msgs });
+        setTab('market');
+        renderMarket();
+    }
+
+    function renderMarket() {
+        document.getElementById('market-feed').innerHTML = state.history.map(h => `
+            <div class="card">
+                <div style="display:flex; justify-content:space-between">
+                    <h3>${h.name} (${h.type})</h3>
+                    <h2 style="color:var(--accent)">${h.score}/100</h2>
+                </div>
+                <div class="review-box"><strong>Crítica:</strong><br>${h.msgs.join('<br>')}</div>
+                <p>Ventas: ${h.sales} | Beneficio Neto: $${h.profit.toLocaleString()}</p>
+            </div>
+        `).join('');
+    }
+
+    function setTab(id) {
+        document.querySelectorAll('.view').forEach(v => v.classList.remove('active'));
+        document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
+        document.getElementById(id).classList.add('active');
+        if(id === 'tech') renderTech();
+        updateUI();
+    }
+
+    updateUI();
+</script>
+</body>
+</html>

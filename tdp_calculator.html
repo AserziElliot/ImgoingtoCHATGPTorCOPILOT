@@ -1,0 +1,24 @@
+<script>
+let db;
+
+fetch("tdp-db.json")
+  .then(r=>r.json())
+  .then(data => {
+    db = data;
+    llenarSelects();
+  });
+
+function llenarSelects(){
+  let cpuSelect = document.getElementById("cpu");
+  let gpuSelect = document.getElementById("gpu");
+  cpuSelect.innerHTML = "";
+  gpuSelect.innerHTML = "";
+
+  db.cpus.forEach(cpu => {
+    cpuSelect.innerHTML += `<option value="${cpu.tdp}">${cpu.name} (${cpu.tdp}W)</option>`;
+  });
+  db.gpus.forEach(gpu => {
+    gpuSelect.innerHTML += `<option value="${gpu.tdp}">${gpu.name} (${gpu.tdp}W)</option>`;
+  });
+}
+</script>
